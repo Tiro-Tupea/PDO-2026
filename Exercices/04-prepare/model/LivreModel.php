@@ -15,25 +15,30 @@ function insertLivre(PDO $con, array $datas){
 
     $text = htmlspecialchars(trim(strip_tags($_POST['text'])));
 
-    if($email ===  false || empty($title) || empty($text )){
-        // on arrête  le script
+    // si au moins un des champs n'est pas valide
+    if($email === false || empty($title) || empty($text)){
+        // on arrête le script
         return false;
     }
 
     // on va préparer notre requête avec des marqueurs nommés (:nom)
-    $sql = "INSERT INTO `livre`
-            (`email`,`title`,`text`)
-            VALUES (:mail, :titre, :dutexte);";
-    // attente des valeurs de marqueurs
-    $prepare = $con->prepare($sql);
-    // on va utiliser le bindValue() par défaut 
+    $sql = "INSERT INTO `livre` 
+            (`email`,`title`,`text`) 
+            VALUES (:mail,:titre,:dutexte);";
+    // attente des valeurs de marqueurs        
+    $prepare = $con->prepare($sql);    
+    // on va utiliser le bindValue() par défaut
     $prepare->bindValue(":mail",$email);
-    $prepare->bindValue(":titre", $title);
-    $prepare->bindValue(":dutexte", $text);
-    // on va éxecuter la requête
+    $prepare->bindValue(":dutexte",$text);
+    $prepare->bindValue(":titre",$title);
+    // on va exécuter la requête
     $prepare->execute();
     // si on a bien insérer 1 ligne
-    return $prepare->rowCount() ===1 ? true : false;
+    return $prepare->rowCount()===1 ? true : false;
+
 }
 
-function readLivres(){}
+
+function readLivres(){
+    return "Nos Livres";
+}
