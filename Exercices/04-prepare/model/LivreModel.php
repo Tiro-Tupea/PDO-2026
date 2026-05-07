@@ -1,11 +1,39 @@
 <?php
-// Ce fichier contiendre les fonctions
-// pour gérer la table livre (future class en OO)
+// Ce fichier contiendra les fonctions
+// pour gérer la table livre (future class en PDO)
 
-function insertLivre(){
-    return "insertion";
+//fonction d'insertion
+function insertLivre(PDO $con, array $datas){
+
+    $email = filter_var($_POST['email'], FILTER_VALIDATE_EMAIL);
+    // false si incorrecte, le mail en string si correcte
+    $title = strip_tags($_POST['title']);
+    // on retire les espaces avant et arrière
+    $title = trim($title);
+    // On encode les caractères 
+    $title = htmlspecialchars($title);
+
+    $text = htmlspecialchars(trim(strip_tags($_POST['text'])));
+
+    if($email ===  false || empty($title) || empty($text )){
+        // on arrête  le script
+        return false;
+    }
+
+    // on va préparer notre requête avec des marqueurs nommés (:nom)
+    $sql = "INSERT INTO `livre`
+            (`email`,`title`,`text`)
+            VALUES (:mail, :titre, :dutexte);";
+    // attente des valeurs de marqueurs
+    $prepare = $con->prepare($sql);
+    // on va utiliser le bindValue() par défaut 
+    $prepare->bindValue(":mail",$email);
+    $prepare->bindValue(":titre", $title);
+    $prepare->bindValue(":dutexte", $text);
+    // on va éxecuter la requête
+    $prepare->execute();
+    // si on a bien insérer 1 ligne
+    return $prepare->rowCount() ===1 ? true : false;
 }
 
-function readLivres(){
-    return "Nos Livres";
-}
+function readLivres(){}

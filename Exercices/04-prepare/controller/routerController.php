@@ -6,7 +6,7 @@ require ROOT_PROJECT."/model/LivreModel.php";
 
 // si l'utilisateur a envoyé le formulaire
 if(isset($_POST['email'],$_POST['title'],$_POST['text'])){
-    echo insertLivre();
+    echo insertLivre($db, $_POST);
 }
 
 $livres = readLivres();
