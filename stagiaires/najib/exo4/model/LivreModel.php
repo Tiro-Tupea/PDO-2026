@@ -1,16 +1,19 @@
 <?php
-// Ce fichier contiendra les fonctions
-// pour gérer la table livre (future class en PDO)
+// Ce fichier contiendre les fonctions
+// pour gérer la table livre (future class en OO)
 
-//fonction d'insertion
-function insertLivre(PDO $con, array $datas){
+// fonction d'insertion
+function insertLivre(PDO $con, array $datas): bool
+{
+    // $_POST['email'],$_POST['title'],$_POST['text']
+    // traitement des variables $_POST en variables locales
+    $email = filter_var($_POST['email'],FILTER_VALIDATE_EMAIL); // false si incorrecte, le mail en string si correcte
 
-    $email = filter_var($_POST['email'], FILTER_VALIDATE_EMAIL);
-    // false si incorrecte, le mail en string si correcte
+    // on retire tout les tags
     $title = strip_tags($_POST['title']);
     // on retire les espaces avant et arrière
     $title = trim($title);
-    // On encode les caractères 
+    // On encode les caractères dangereux en entités html
     $title = htmlspecialchars($title);
 
     $text = htmlspecialchars(trim(strip_tags($_POST['text'])));
@@ -23,7 +26,7 @@ function insertLivre(PDO $con, array $datas){
 
     // on va préparer notre requête avec des marqueurs nommés (:nom)
     $sql = "INSERT INTO `livre` 
-            (`email`,`title`,`text`) 
+            (`email`,`title`,`texte`) 
             VALUES (:mail,:titre,:dutexte);";
     // attente des valeurs de marqueurs        
     $prepare = $con->prepare($sql);    
@@ -41,8 +44,15 @@ function insertLivre(PDO $con, array $datas){
 
 function readLivres(PDO $con): array
 {
-    $sql = "SELECT * FROM `livre` ORDER BY `datetime` DESC;";
-    $prepare = $con->prepare($sql);
-    $prepare->execute();
-    return $prepare->fetchAll(PDO::FETCH_ASSOC);
+    // on va récupérer tous les messages
+    $sql = "SELECT * FROM `livre` ORDER BY `datetime` ASC";
+    $request = $con->query($sql);
+
+    // transformation du ou des résultat en tableau indexé contenant des tableaux associatifs
+    $articles = $request->fetchAll(PDO::FETCH_ASSOC);
+
+    // bonne pratique
+    $request->closeCursor();
+
+    return $articles ?: [];
 }
