@@ -9,7 +9,7 @@
 require_once "../config-dev.php";
 
 // connection
-try {
+try{
     $db = new PDO(
         dsn: MARIA_DSN,
         username: DB_CONNECT_USER,
