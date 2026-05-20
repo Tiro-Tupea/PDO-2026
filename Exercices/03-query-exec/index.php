@@ -111,7 +111,7 @@ if($nbArticle===0){
     foreach($articles as $article):
     ?>
         <div class="message">
-            <h4><?= $article['id'] ?>) <?= $article['title'] ?></h4>
+            <h4><?= $article['id'] ?> <?= $article['title'] ?></h4>
             <p>Ecrit par <?= $article['email'] ?> le <?= date("d/m/Y \à H\hi",strtotime($article['datetime'])) ?></p>
             <p><?= htmlspecialchars($article['text']) ?></p>
         </div>
